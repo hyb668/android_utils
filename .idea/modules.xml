@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MyTest.iml" filepath="$PROJECT_DIR$/MyTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Test/TestMvp/TestMvp.iml" filepath="$PROJECT_DIR$/Test/TestMvp/TestMvp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Utils/Utils.iml" filepath="$PROJECT_DIR$/Utils/Utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Test/_Test_.iml" filepath="$PROJECT_DIR$/Test/_Test_.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TestMvp/testwith_linkface.iml" filepath="$PROJECT_DIR$/TestMvp/testwith_linkface.iml" />
+    </modules>
+  </component>
+</project>

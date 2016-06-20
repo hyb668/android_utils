@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Testmvp</string>
+    <string name="city">city: </string>
+    <string name="wd"> wd: </string>
+    <string name="ws"> ws: </string>
+    <string name="time"> time: </string>
+</resources>
