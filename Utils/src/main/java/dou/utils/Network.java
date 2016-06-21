@@ -16,6 +16,14 @@ public class Network {
 
     private static final String TAG = Network.class.getSimpleName();
 
+    public static final String NETWORK_TYPE_WIFI = "wifi";
+    public static final String NETWORK_TYPE_3G = "3g";
+    public static final String NETWORK_TYPE_2G = "2g";
+    public static final String NETWORK_TYPE_WAP = "wap";
+    public static final String NETWORK_TYPE_UNKNOWN = "unknown";
+    public static final String NETWORK_TYPE_DISCONNECT = "disconnect";
+
+
     /**
      * 获取ConnectivityManager
      */
