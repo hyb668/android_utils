@@ -7,7 +7,7 @@ import com.dou.testmvp.view.MainView;
 /**
  * Created by mac on 16/6/13.
  */
-public class MainPresenter implements Presenter<MainView>,IMainPresenter{
+public class MainPresenter implements Presenter<MainView>, IMainPresenter {
 
     private MainView mMainView;
     private MainModel mMainModel;

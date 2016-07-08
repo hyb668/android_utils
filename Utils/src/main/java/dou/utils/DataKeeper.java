@@ -69,4 +69,8 @@ public class DataKeeper {
     public void putInt(String key, int value) {
         sp.edit().putInt(key, value).commit();
     }
+
+    public void clearTag() {
+        sp.edit().clear().commit();
+    }
 }

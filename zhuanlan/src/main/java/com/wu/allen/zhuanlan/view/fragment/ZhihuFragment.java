@@ -2,8 +2,10 @@ package com.wu.allen.zhuanlan.view.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
+import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -106,6 +108,7 @@ public class ZhihuFragment extends BaseFragment {
         adapter.setNoMore(R.layout.no_more_layout);
         adapter.setError(R.layout.error_layout);
         adapter.setOnItemClickListener(new RecyclerArrayAdapter.OnItemClickListener() {
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onItemClick(int position) {
                 Intent intent = new Intent(getActivity(),ZhlanDetailActivity.class);

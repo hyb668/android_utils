@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/Test/TestMvp/TestMvp.iml" filepath="$PROJECT_DIR$/Test/TestMvp/TestMvp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Utils/Utils.iml" filepath="$PROJECT_DIR$/Utils/Utils.iml" />
       <module fileurl="file://$PROJECT_DIR$/Test/_Test_.iml" filepath="$PROJECT_DIR$/Test/_Test_.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TestMvp/testwith_linkface.iml" filepath="$PROJECT_DIR$/TestMvp/testwith_linkface.iml" />
       <module fileurl="file://$PROJECT_DIR$/zhuanlan/zhuanlan.iml" filepath="$PROJECT_DIR$/zhuanlan/zhuanlan.iml" />
     </modules>
   </component>

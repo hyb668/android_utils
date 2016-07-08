@@ -58,6 +58,16 @@ public class DisplayUtil {
         return dm;
     }
 
+    public static int getScreenHeightPixels(Context context) {
+        DisplayMetrics dm = getDisplayMetrics(context);
+        return dm.heightPixels;
+    }
+
+    public static int getScreenWidthPixels(Context context) {
+        DisplayMetrics dm = getDisplayMetrics(context);
+        return dm.widthPixels;
+    }
+
     public static String getAndroidID(Context ctx) {
         return Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
     }

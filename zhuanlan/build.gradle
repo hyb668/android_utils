@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.wu.allen.zhuanlan"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -43,4 +43,5 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.0.1'
 
+    compile project(':Utils')
 }
