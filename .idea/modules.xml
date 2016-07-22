@@ -5,7 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/MyTest.iml" filepath="$PROJECT_DIR$/MyTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/Test/TestMvp/TestMvp.iml" filepath="$PROJECT_DIR$/Test/TestMvp/TestMvp.iml" />
       <module fileurl="file://$PROJECT_DIR$/Utils/Utils.iml" filepath="$PROJECT_DIR$/Utils/Utils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Test/ViewTest/ViewTest.iml" filepath="$PROJECT_DIR$/Test/ViewTest/ViewTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/Test/_Test_.iml" filepath="$PROJECT_DIR$/Test/_Test_.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Test/testopengl/testopengl.iml" filepath="$PROJECT_DIR$/Test/testopengl/testopengl.iml" />
       <module fileurl="file://$PROJECT_DIR$/zhuanlan/zhuanlan.iml" filepath="$PROJECT_DIR$/zhuanlan/zhuanlan.iml" />
     </modules>
   </component>

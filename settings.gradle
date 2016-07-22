@@ -1,2 +1,2 @@
-include '/Test/:TestMvp'
-include ':Utils','zhuanlan'
+include '/Test/:TestMvp', '/Test/:testopengl', '/Test/:ViewTest'
+include ':Utils', 'zhuanlan'

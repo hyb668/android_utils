@@ -50,7 +50,7 @@ public class BitmapUtil {
     public static int[] getBGRAImageByte(Bitmap image) {
         int width = image.getWidth();
         int height = image.getHeight();
-        if(image.getConfig().equals(Bitmap.Config.ARGB_8888)) {
+        if (image.getConfig().equals(Bitmap.Config.ARGB_8888)) {
             int[] imgData = new int[width * height];
             image.getPixels(imgData, 0, width, 0, 0, width, height);
             return imgData;
@@ -259,33 +259,27 @@ public class BitmapUtil {
         return compressBitmapSmallTo(filePath, 480, 800, maxLenth);
     }
 
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        int h = options.outHeight;
-        int w = options.outWidth;
-        int inSampleSize = 0;
-        if (h > reqHeight || w > reqWidth) {
-            float ratioW = (float) w / reqWidth;
-            float ratioH = (float) h / reqHeight;
-            inSampleSize = (int) Math.min(ratioH, ratioW);
-        }
-        inSampleSize = Math.max(1, inSampleSize);
-        return inSampleSize;
-    }
-
-//
 //    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-//        final int height = options.outHeight;
-//        final int width = options.outWidth;
-//        int inSampleSize = 1;
-//        if (height > reqHeight || width > reqWidth) {
-//            final int halfHeight = height / 2;
-//            final int halfWidth = width / 2;
-//            while ((halfHeight / inSampleSize) > reqHeight && (halfWidth / inSampleSize) > reqWidth) {
-//                inSampleSize *= 2;
-//            }
+//        int h = options.outHeight;
+//        int w = options.outWidth;
+//        int inSampleSize = 0;
+//        if (h > reqHeight || w > reqWidth) {
+//            float ratioW = (float) w / reqWidth;
+//            float ratioH = (float) h / reqHeight;
+//            inSampleSize = (int) Math.min(ratioH, ratioW);
 //        }
+//        inSampleSize = Math.max(1, inSampleSize);
 //        return inSampleSize;
 //    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int destWidth, int destHeight) {
+        int h = options.outHeight;
+        int w = options.outWidth;
+        int scaleWidth = (int) Math.ceil((float) w / destWidth);
+        int scaleHeight = (int) Math.ceil((float) h / destHeight);
+        return Math.max(scaleWidth, scaleHeight);
+    }
+
 
     public static int getPictureDegree(String imagePath) {
         int i = 0;
@@ -405,4 +399,6 @@ public class BitmapUtil {
         matrix.postScale(scaleWidth, scaleHeight);
         return Bitmap.createBitmap(bitMap, 0, 0, width, height, matrix, true);
     }
+
+
 }
