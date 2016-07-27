@@ -9,67 +9,127 @@ import android.util.Log;
 public class DLog {
 
     public static boolean mSwitch = true;
-    private static String DEFAULT_TAG = "DLog";
-    private static String DEFAULT_MESSAGE = "DLog message";
+
+    public static final int V = 1;
+    public static final int D = 2;
+    public static final int I = 3;
+    public static final int W = 4;
+    public static final int E = 5;
 
     public static void v() {
-        v(DEFAULT_MESSAGE);
+        v(null);
     }
 
     public static void d() {
-        d(DEFAULT_MESSAGE);
+        d(null);
     }
 
     public static void i() {
-        i(DEFAULT_MESSAGE);
+        i(null);
     }
 
     public static void w() {
-        w(DEFAULT_MESSAGE);
+        w(null);
     }
 
     public static void e() {
-        e(DEFAULT_MESSAGE);
+        e(null);
     }
 
     public static void v(Object message) {
-        v(DEFAULT_TAG, String.valueOf(message));
+        v(null, message);
     }
 
     public static void d(Object message) {
-        d(DEFAULT_TAG, String.valueOf(message));
+        d(null, message);
     }
 
     public static void i(Object message) {
-        i(DEFAULT_TAG, String.valueOf(message));
+        i(null, message);
     }
 
     public static void w(Object message) {
-        w(DEFAULT_TAG, String.valueOf(message));
+        w(null, message);
     }
 
     public static void e(Object message) {
-        e(DEFAULT_TAG, String.valueOf(message));
+        e(null, message);
     }
 
     public static void v(String tag, Object message) {
-        if (mSwitch) Log.v(tag, String.valueOf(message));
+        llog(V, tag, message);
     }
 
     public static void d(String tag, Object message) {
-        if (mSwitch) Log.d(tag, String.valueOf(message));
+        llog(D, tag, message);
     }
 
     public static void i(String tag, Object message) {
-        if (mSwitch) Log.d(tag, String.valueOf(message));
+        llog(I, tag, message);
     }
 
     public static void w(String tag, Object message) {
-        if (mSwitch) Log.w(tag, String.valueOf(message));
+        llog(W, tag, message);
     }
 
     public static void e(String tag, Object message) {
-        if (mSwitch) Log.e(tag, String.valueOf(message));
+        llog(E, tag, message);
+    }
+
+    /**
+     * 执行打印方法
+     *
+     * @param type
+     * @param tagStr
+     * @param obj
+     */
+    public static void llog(int type, String tagStr, Object obj) {
+        String msg;
+        if (!mSwitch) {
+            return;
+        }
+
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+        int index = 4;
+        String className = stackTrace[index].getFileName();
+        String methodName = stackTrace[index].getMethodName();
+        int lineNumber = stackTrace[index].getLineNumber();
+
+        String tag = (tagStr == null ? className : tagStr);
+        methodName = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[ (").append(className).append(":").append(lineNumber).append(")#").append(methodName).append(" ] ");
+
+        if (obj == null) {
+            msg = "Log with null Object";
+        } else {
+            msg = obj.toString();
+        }
+        if (msg != null) {
+            stringBuilder.append(msg);
+        }
+
+        String logStr = stringBuilder.toString();
+
+        switch (type) {
+            case V:
+                Log.v(tag, logStr);
+                break;
+            case D:
+                Log.d(tag, logStr);
+                break;
+            case I:
+                Log.i(tag, logStr);
+                break;
+            case W:
+                Log.w(tag, logStr);
+                break;
+            case E:
+                Log.e(tag, logStr);
+                break;
+        }
     }
 
 

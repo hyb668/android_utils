@@ -11,22 +11,22 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Test" />
+            <option value="$PROJECT_DIR$/Test/NomalGank" />
             <option value="$PROJECT_DIR$/Test/TestMvp" />
             <option value="$PROJECT_DIR$/Test/ViewTest" />
             <option value="$PROJECT_DIR$/Test/testopengl" />
             <option value="$PROJECT_DIR$/Utils" />
-            <option value="$PROJECT_DIR$/zhuanlan" />
           </set>
         </option>
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Test" />
+            <option value="$PROJECT_DIR$/Test/NomalGank" />
             <option value="$PROJECT_DIR$/Test/TestMvp" />
             <option value="$PROJECT_DIR$/Test/ViewTest" />
             <option value="$PROJECT_DIR$/Test/testopengl" />
             <option value="$PROJECT_DIR$/Utils" />
-            <option value="$PROJECT_DIR$/zhuanlan" />
           </set>
         </option>
       </GradleProjectSettings>

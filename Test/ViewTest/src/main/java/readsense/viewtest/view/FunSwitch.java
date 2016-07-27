@@ -24,8 +24,8 @@ import dou.utils.DLog;
  */
 public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListener, ValueAnimator.AnimatorListener {
     private final static float DEFAULT_WIDTH_HEIGHT_PERCENT = 0.65f;
-    private final static float FACE_ANIM_MAX_FRACTION = 1.4f;
-    private final static float NORMAL_ANIM_MAX_FRACTION = 1.0f;
+    private final static float FACE_ANIM_MAX_FRACTION = 1.0f;
+    //    private final static float NORMAL_ANIM_MAX_FRACTION = 1.0f;
     private float mTransitionLength;
     private Path mBackgroundPath;
     private Path mFacePath;
@@ -49,7 +49,7 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
     private boolean mIsDuringAnimation = false;
 
     private long mOnAnimationDuration = 850L;
-    private long mOffAnimationDuration = (long) (mOnAnimationDuration * NORMAL_ANIM_MAX_FRACTION / FACE_ANIM_MAX_FRACTION);
+    private long mOffAnimationDuration = 850;
 
 
     public FunSwitch(Context context, AttributeSet attrs) {
@@ -113,9 +113,8 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        DLog.d("onDraw");
         drawBackground(canvas);
-//        drawForeground(canvas);
+        drawForeground(canvas);
     }
 
 
@@ -130,38 +129,31 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
 
         //移动画布
         canvas.save();
-        canvas.translate(getForegroundTransitionValue(), 0);
-        drawFace(canvas, mAnimationFraction);
-        canvas.restore();
-    }
-
-    public void drawFace(Canvas canvas, float fraction) {
         mPaint.setAntiAlias(true);
         //面部背景
         int mFaceColor = 0xffffffff;
         mPaint.setColor(mFaceColor);
         mPaint.setStyle(Paint.Style.FILL);
-        canvas.drawPath(mFacePath, mPaint);
 
-        translateAndClipFace(canvas, fraction);
-        drawEye(canvas, fraction);
-        drawMouth(canvas, fraction);
+        canvas.translate(getForegroundTransitionValue(), 0);
+        canvas.drawPath(mFacePath, mPaint);
+        translateAndClipFace(canvas, mAnimationFraction);
+        drawEye(canvas, mAnimationFraction);
+        drawMouth(canvas, mAnimationFraction);
+
+        canvas.restore();
     }
 
     private void translateAndClipFace(Canvas canvas, float fraction) {
         //截掉超出face的部分。
         canvas.clipPath(mFacePath);
 
-        float faceTransition;
+        float faceTransition = 0;
         //TODO：合理的转动区间，眼睛出现和消失的时间比为1：1,所以当fraction=0.25时，应该只显示侧脸
         if (fraction >= 0.0f && fraction < 0.5f) {
             faceTransition = fraction * mFaceRadius * 4;
-        } else if (fraction <= NORMAL_ANIM_MAX_FRACTION) {
-            faceTransition = -(NORMAL_ANIM_MAX_FRACTION - fraction) * mFaceRadius * 4;
-        } else if (fraction <= (NORMAL_ANIM_MAX_FRACTION + FACE_ANIM_MAX_FRACTION) / 2) {
-            faceTransition = (fraction - NORMAL_ANIM_MAX_FRACTION) * mFaceRadius * 2;
-        } else {
-            faceTransition = (FACE_ANIM_MAX_FRACTION - fraction) * mFaceRadius * 2;
+        } else if (fraction <= FACE_ANIM_MAX_FRACTION) {
+            faceTransition = -(FACE_ANIM_MAX_FRACTION - fraction) * mFaceRadius * 4;
         }
 
         canvas.translate(faceTransition, 0);
@@ -239,8 +231,7 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
         float result;
         if (mIsOpen) {
             if (mIsDuringAnimation) {
-                result = mAnimationFraction > NORMAL_ANIM_MAX_FRACTION ?
-                        mTransitionLength : mTransitionLength * mAnimationFraction;
+                result = mTransitionLength * mAnimationFraction;
             } else {
                 result = mTransitionLength;
             }
@@ -256,7 +247,6 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.e("TEST", "onTouchEvent");
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 return true;
@@ -290,7 +280,7 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
     }
 
     private void startCloseAnimation() {
-        mValueAnimator = ValueAnimator.ofFloat(NORMAL_ANIM_MAX_FRACTION, 0);
+        mValueAnimator = ValueAnimator.ofFloat(FACE_ANIM_MAX_FRACTION, 0);
         mValueAnimator.setDuration(mOffAnimationDuration);
         mValueAnimator.addUpdateListener(this);
         mValueAnimator.addListener(this);
@@ -320,10 +310,8 @@ public class FunSwitch extends View implements ValueAnimator.AnimatorUpdateListe
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        Log.e("TEST", animation.getAnimatedValue() + " ");
         mAnimationFraction = (float) animation.getAnimatedValue();
         invalidate();
-
     }
 
     @Override

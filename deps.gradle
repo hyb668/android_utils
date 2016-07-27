@@ -1,0 +1,11 @@
+//rxjava-retrofit2-okhttp
+project.ext.set('rxjava', 'io.reactivex:rxjava:1.1.7')
+project.ext.set('rxandroid', 'io.reactivex:rxandroid:1.2.1')
+project.ext.set('rxlifecycle', 'com.trello:rxlifecycle:0.6.1')
+project.ext.set('rxlifecycle_components', 'com.trello:rxlifecycle-components:0.6.1')
+
+project.ext.set('retrofit2', 'com.squareup.retrofit2:retrofit:2.1.0')
+project.ext.set('retrofit2_converter_gson', 'com.squareup.retrofit2:converter-gson:2.1.0')
+project.ext.set('retrofit2_adapter_rxjava', 'com.squareup.retrofit2:adapter-rxjava:2.1.0')
+project.ext.set('gson', 'com.google.code.gson:gson:2.7')
+project.ext.set('butterknife', 'com.jakewharton:butterknife:7.0.1')
