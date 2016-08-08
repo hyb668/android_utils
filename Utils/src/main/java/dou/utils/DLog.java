@@ -91,12 +91,12 @@ public class DLog {
 
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
-        int index = 4;
+        int index = 5;
         String className = stackTrace[index].getFileName();
         String methodName = stackTrace[index].getMethodName();
         int lineNumber = stackTrace[index].getLineNumber();
 
-        String tag = (tagStr == null ? className : tagStr);
+        String tag = (tagStr == null ? "DLog" : tagStr);
         methodName = methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
 
         StringBuilder stringBuilder = new StringBuilder();
