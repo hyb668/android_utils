@@ -3,10 +3,10 @@ package dou.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +16,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
@@ -26,6 +27,129 @@ import java.util.zip.GZIPOutputStream;
  * Created by mac on 16/6/20.
  */
 public class FileUtil {
+
+    public static StringBuilder readFile(String filePath, String charsetName) {
+        File file = new File(filePath);
+        if (!file.isFile()) return null;
+        return readFile(file, charsetName);
+    }
+
+    public static StringBuilder readFile(File file, String charsetName) {
+        StringBuilder sb = new StringBuilder("");
+        BufferedReader reader = null;
+        try {
+            InputStreamReader is = new InputStreamReader(new FileInputStream(file), charsetName);
+            reader = new BufferedReader(is);
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!sb.toString().equals("")) {
+                    sb.append("\r\n");
+                }
+                sb.append(line);
+            }
+            reader.close();
+            return sb;
+        } catch (IOException e) {
+            throw new RuntimeException("IOException occurred. ", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static boolean writeFile(String filePath, String content, boolean append) {
+        if (StringUtils.isSpace(content)) return false;
+        FileWriter fileWriter = null;
+        try {
+            fileWriter = new FileWriter(filePath, append);
+            fileWriter.write(content);
+            return true;
+        } catch (IOException e) {
+            throw new RuntimeException("IOException occurred. ", e);
+        } finally {
+            if (fileWriter != null) {
+                try {
+                    fileWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static boolean writeFile(String filePath, String content) {
+        return writeFile(filePath, content, false);
+    }
+
+    public static boolean writeFile(String filePath, InputStream stream) {
+        return writeFile(filePath, stream, false);
+    }
+
+
+    public static boolean writeFile(String filePath, InputStream stream, boolean append) {
+        return writeFile(filePath != null ? new File(filePath) : null, stream, append);
+    }
+
+    public static boolean writeFile(File file, InputStream stream) {
+        return writeFile(file, stream, false);
+    }
+
+    public static boolean writeFile(File file, InputStream stream, boolean append) {
+        OutputStream o = null;
+        try {
+            o = new FileOutputStream(file, append);
+            byte data[] = new byte[1024];
+            int length;
+            while ((length = stream.read(data)) != -1) {
+                o.write(data, 0, length);
+            }
+            o.flush();
+            return true;
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("FileNotFoundException occurred. ", e);
+        } catch (IOException e) {
+            throw new RuntimeException("IOException occurred. ", e);
+        } finally {
+            if (o != null) {
+                try {
+                    o.close();
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void moveFile(String sourceFilePath, String destFilePath) {
+        if (TextUtils.isEmpty(sourceFilePath) || TextUtils.isEmpty(destFilePath)) {
+            throw new RuntimeException("Both sourceFilePath and destFilePath cannot be null.");
+        }
+        moveFile(new File(sourceFilePath), new File(destFilePath));
+    }
+
+    public static void moveFile(File srcFile, File destFile) {
+        boolean rename = srcFile.renameTo(destFile);
+        if (!rename) {
+            copyFile(srcFile.getAbsolutePath(), destFile.getAbsolutePath());
+            deleteFile(srcFile.getAbsolutePath());
+        }
+    }
+
+    public static boolean copyFile(String sourceFilePath, String destFilePath) {
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(sourceFilePath);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("FileNotFoundException occurred. ", e);
+        }
+        return writeFile(destFilePath, inputStream);
+    }
 
     public static FileInputStream openInputStream(File file) throws IOException {
         if (file.exists()) {
@@ -164,19 +288,20 @@ public class FileUtil {
     /***
      * 根据路径删除图片
      */
-    public static boolean deleteFile(File file)throws IOException{
+    public static boolean deleteFile(File file) throws IOException {
         return file != null && file.delete();
     }
 
     /***
      * 获取文件扩展名
+     *
      * @param filename
      * @return 返回文件扩展名
      */
     public static String getExtensionName(String filename) {
         if ((filename != null) && (filename.length() > 0)) {
             int dot = filename.lastIndexOf('.');
-            if ((dot >-1) && (dot < (filename.length() - 1))) {
+            if ((dot > -1) && (dot < (filename.length() - 1))) {
                 return filename.substring(dot + 1);
             }
         }
@@ -225,38 +350,6 @@ public class FileUtil {
 
     public static boolean isFileExist(String filePath) {
         return new File(filePath).exists();
-    }
-
-    public static boolean writeFile(String filename, String content) {
-        boolean isSuccess = false;
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new FileWriter(filename, false));
-            bufferedWriter.write(content);
-            isSuccess = true;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            closeIO(bufferedWriter);
-        }
-        return isSuccess;
-    }
-
-    public static String readFile(String filename) {
-        File file = new File(filename);
-        BufferedReader bufferedReader = null;
-        String str = null;
-        try {
-            if (file.exists()) {
-                bufferedReader = new BufferedReader(new FileReader(filename));
-                str = bufferedReader.readLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            closeIO(bufferedReader);
-        }
-        return str;
     }
 
     public static void copyFileFast(FileInputStream is, FileOutputStream os) throws IOException {

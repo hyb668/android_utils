@@ -399,4 +399,5 @@ public class BitmapUtil {
         matrix.postScale(scaleWidth, scaleHeight);
         return Bitmap.createBitmap(bitMap, 0, 0, width, height, matrix, true);
     }
+
 }

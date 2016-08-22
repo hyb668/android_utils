@@ -7,7 +7,7 @@ import java.util.Map;
  * 校验
  * Created by mac on 16/6/14.
  */
-public class Check {
+public class CheckUtil {
 
     public static boolean isEmpty(CharSequence str) {
         return isNull(str) || str.length() == 0;

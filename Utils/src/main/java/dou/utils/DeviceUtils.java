@@ -1,18 +1,29 @@
 package dou.utils;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.os.SystemClock;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * Created by mac on 16/6/20.
+ * Created by mac on 16/8/18.
  */
-public class CpuUtil {
-    private static final String TAG = CpuUtil.class.getSimpleName();
+public class DeviceUtils {
+
+    private static final String TAG = DeviceUtils.class.getSimpleName();
     private static final String CPU_INFO_PATH = "/proc/cpuinfo";
     private static final String CPU_FREQ_NULL = "N/A";
     private static final String CMD_CAT = "/system/bin/cat";
@@ -86,7 +97,7 @@ public class CpuUtil {
      * Get CPU name.
      */
     public static String getCpuName() {
-        if (!Check.isEmpty(CPU_NAME)) {
+        if (!CheckUtil.isEmpty(CPU_NAME)) {
             return CPU_NAME;
         }
         try {
@@ -168,5 +179,126 @@ public class CpuUtil {
             ex.printStackTrace();
         }
         return null;
+    }
+
+
+
+    /**
+     * 获取设备MAC地址
+     * 需添加权限 android.permission.ACCESS_WIFI_STATE
+     *
+     * @param context 上下文
+     * @return MAC地址
+     */
+    public static String getMacAddress(Context context) {
+        WifiManager wifi = (WifiManager) context
+                .getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifi.getConnectionInfo();
+        String macAddress = info.getMacAddress().replace(":", "");
+        return macAddress == null ? "" : macAddress;
+    }
+
+    /**
+     * 获取设备MAC地址
+     * <p>需添加权限 android.permission.ACCESS_WIFI_STATE</p>
+     *
+     * @return MAC地址
+     */
+    public static String getMacAddress() {
+        String macAddress = null;
+        LineNumberReader reader = null;
+        try {
+            Process pp = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address");
+            InputStreamReader ir = new InputStreamReader(pp.getInputStream());
+            reader = new LineNumberReader(ir);
+            macAddress = reader.readLine().replace(":", "");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return macAddress == null ? "" : macAddress;
+    }
+
+    /**
+     * 获取设备厂商，如Xiaomi
+     *
+     * @return 设备厂商
+     */
+    public static String getManufacturer() {
+        return Build.MANUFACTURER;
+    }
+
+    /**
+     * 获取设备型号，如MI2SC
+     *
+     * @return 设备型号
+     */
+    public static String getModel() {
+        String model = Build.MODEL;
+        if (model != null) {
+            model = model.trim().replaceAll("\\s*", "");
+        } else {
+            model = "";
+        }
+        return model;
+    }
+
+    public static String getBootTimeString() {
+        long ut = SystemClock.elapsedRealtime() / 1000;
+        int h = (int) ((ut / 3600));
+        int m = (int) ((ut / 60) % 60);
+        return h + ":" + m;
+    }
+
+    public static String getAllSystemInfo() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = dateFormat.format(date);
+        StringBuilder sb = new StringBuilder();
+        sb.append("_______  系统信息  ").append(time).append(" ______________");
+        sb.append("\nID                 :").append(Build.ID);
+        sb.append("\nBRAND              :").append(Build.BRAND);
+        sb.append("\nMODEL              :").append(Build.MODEL);
+        sb.append("\nRELEASE            :").append(Build.VERSION.RELEASE);
+        sb.append("\nSDK                :").append(Build.VERSION.SDK);
+
+        sb.append("\n_______ OTHER _______");
+        sb.append("\nBOARD              :").append(Build.BOARD);
+        sb.append("\nPRODUCT            :").append(Build.PRODUCT);
+        sb.append("\nDEVICE             :").append(Build.DEVICE);
+        sb.append("\nFINGERPRINT        :").append(Build.FINGERPRINT);
+        sb.append("\nHOST               :").append(Build.HOST);
+        sb.append("\nTAGS               :").append(Build.TAGS);
+        sb.append("\nTYPE               :").append(Build.TYPE);
+        sb.append("\nTIME               :").append(Build.TIME);
+        sb.append("\nINCREMENTAL        :").append(Build.VERSION.INCREMENTAL);
+
+        sb.append("\n_______ CUPCAKE-3 _______");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+            sb.append("\nDISPLAY            :").append(Build.DISPLAY);
+        }
+
+        sb.append("\n_______ DONUT-4 _______");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
+            sb.append("\nSDK_INT            :").append(Build.VERSION.SDK_INT);
+            sb.append("\nMANUFACTURER       :").append(Build.MANUFACTURER);
+            sb.append("\nBOOTLOADER         :").append(Build.BOOTLOADER);
+            sb.append("\nCPU_ABI            :").append(Build.CPU_ABI);
+            sb.append("\nCPU_ABI2           :").append(Build.CPU_ABI2);
+            sb.append("\nHARDWARE           :").append(Build.HARDWARE);
+            sb.append("\nUNKNOWN            :").append(Build.UNKNOWN);
+            sb.append("\nCODENAME           :").append(Build.VERSION.CODENAME);
+        }
+
+        sb.append("\n_______ GINGERBREAD-9 _______");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            sb.append("\nSERIAL             :").append(Build.SERIAL);
+        }
+        return sb.toString();
     }
 }
