@@ -6,12 +6,12 @@ import android.widget.Toast;
 /**
  * Created by mac on 16/6/14.
  */
-public class Toastor {
+public class ToastUtil {
 
     private Toast mToast;
     private Context context;
 
-    public Toastor(Context context) {
+    public ToastUtil(Context context) {
         this.context = context.getApplicationContext();
     }
 

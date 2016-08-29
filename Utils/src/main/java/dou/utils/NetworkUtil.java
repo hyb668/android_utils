@@ -1,6 +1,7 @@
 package dou.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
@@ -12,9 +13,9 @@ import java.lang.reflect.Method;
  * 网络
  * Created by mac on 16/6/14.
  */
-public class Network {
+public class NetworkUtil {
 
-    private static final String TAG = Network.class.getSimpleName();
+    private static final String TAG = NetworkUtil.class.getSimpleName();
 
     public static final String NETWORK_TYPE_WIFI = "wifi";
     public static final String NETWORK_TYPE_3G = "3g";
@@ -23,6 +24,18 @@ public class Network {
     public static final String NETWORK_TYPE_UNKNOWN = "unknown";
     public static final String NETWORK_TYPE_DISCONNECT = "disconnect";
 
+
+    /**
+     * 打开网络设置界面
+     * <p>3.0以下打开设置界面</p>
+     */
+    public static void openWirelessSettings(Context context) {
+        if (android.os.Build.VERSION.SDK_INT > 10) {
+            context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+        } else {
+            context.startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+        }
+    }
 
     /**
      * 获取ConnectivityManager
@@ -47,6 +60,7 @@ public class Network {
         NetworkInfo net = getConnectivityManager(context).getActiveNetworkInfo();
         return net != null && net.isConnected();
     }
+    
 
     /**
      * 判断有无网络正在连接中（查找网络、校验、获取IP等）。

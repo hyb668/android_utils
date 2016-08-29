@@ -5,6 +5,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.SystemClock;
+import android.provider.Settings;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,9 +22,9 @@ import java.util.regex.Pattern;
 /**
  * Created by mac on 16/8/18.
  */
-public class DeviceUtils {
+public class DeviceUtil {
 
-    private static final String TAG = DeviceUtils.class.getSimpleName();
+    private static final String TAG = DeviceUtil.class.getSimpleName();
     private static final String CPU_INFO_PATH = "/proc/cpuinfo";
     private static final String CPU_FREQ_NULL = "N/A";
     private static final String CMD_CAT = "/system/bin/cat";
@@ -182,7 +183,6 @@ public class DeviceUtils {
     }
 
 
-
     /**
      * 获取设备MAC地址
      * 需添加权限 android.permission.ACCESS_WIFI_STATE
@@ -253,6 +253,14 @@ public class DeviceUtils {
         int h = (int) ((ut / 3600));
         int m = (int) ((ut / 60) % 60);
         return h + ":" + m;
+    }
+
+    public static String getAndroidId(Context mContext) {
+        return Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+    public static String getSERIAL() {
+        return android.os.Build.SERIAL;
     }
 
     public static String getAllSystemInfo() {

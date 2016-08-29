@@ -26,8 +26,11 @@ import java.util.regex.Pattern;
 
 /**
  * Created by mac on 16/6/20.
+ * app相关工具类
  */
 public class AppUtil {
+
+
 
     public static String getAppName(Context context, String packageName) {
         PackageManager pm = context.getPackageManager();

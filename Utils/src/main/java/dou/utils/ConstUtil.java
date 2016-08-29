@@ -3,7 +3,7 @@ package dou.utils;
 /**
  * Created by mac on 16/8/18.
  */
-public class ConstUtils {
+public class ConstUtil {
     /******************** 存储相关常量 ********************/
     /**
      * Byte与Byte的倍数

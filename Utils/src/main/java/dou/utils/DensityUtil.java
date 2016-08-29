@@ -69,7 +69,7 @@ public class DensityUtil {
         return h;
     }
 
-    public static int getStatusBarH(Context context) {
+    public static int getStatusBarHeight(Context context) {
         Class<?> c;
         Object obj;
         Field field;
@@ -86,7 +86,7 @@ public class DensityUtil {
         return statusBarHeight;
     }
 
-    public static int getNavigationBarrH(Context c) {
+    public static int getNavigationBarrHeight(Context c) {
         Resources resources = c.getResources();
         int identifier = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         return resources.getDimensionPixelOffset(identifier);

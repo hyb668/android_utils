@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.Html;
 import android.view.View;
 
 /**
@@ -22,18 +21,6 @@ public class DialogUtil {
         }
         return builder;
     }
-
-    public static AlertDialog.Builder dialogBuilder(Context context, String title, String msg, int i) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        if (msg != null) {
-            builder.setMessage(Html.fromHtml(msg));
-        }
-        if (title != null) {
-            builder.setTitle(title);
-        }
-        return builder;
-    }
-
 
     public static AlertDialog.Builder dialogBuilder(Context context, int title, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -15,8 +15,9 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by mac on 16/8/18.
+ * 编解码相关工具类
  */
-public class EncodeUtils {
+public class EncodeUtil {
 
     private static final int STREAM_BUFFER_LENGTH = 1024;
 
