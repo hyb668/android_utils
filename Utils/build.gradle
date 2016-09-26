@@ -16,9 +16,32 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        // set to true to turn off analysis progress reporting by lint
+        quiet true
+        // if true, stop the gradle build if errors are found
+        abortOnError false
+        // if true, only report errors
+        ignoreWarnings false
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:24.2.0'
 }
+
+//task to delete the old jar
+task deleteOldJar(type: Delete) {
+    delete '/libs/libutils.jar'
+}
+
+//task to export contexts as jar
+task exportJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('/libs')
+    include('classes.jar')
+    rename('classes.jar', 'libutils.jar')
+}
+
+exportJar.dependsOn(deleteOldJar, build)

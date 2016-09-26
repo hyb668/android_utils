@@ -10,16 +10,10 @@ import android.view.View;
  */
 public class FallenLeaveView extends View {
 
-    public FallenLeaveView(Context context) {
-        super(context);
-    }
+    private int mCurrentProgressPosition;
 
     public FallenLeaveView(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    public FallenLeaveView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
     }
 
 
