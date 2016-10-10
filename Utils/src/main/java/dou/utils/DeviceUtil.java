@@ -37,6 +37,7 @@ public class DeviceUtil {
     private static long CPU_MAX_FREQENCY = 0;
     private static long CPU_MIN_FREQENCY = 0;
 
+
     /**
      * Print cpu info.
      */

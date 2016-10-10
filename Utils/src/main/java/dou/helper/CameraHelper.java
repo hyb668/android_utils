@@ -2,20 +2,23 @@ package dou.helper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.Iterator;
 import java.util.List;
 
-import dou.utils.DLog;
 import dou.utils.DisplayUtil;
 
-import static android.hardware.Camera.*;
+import static android.hardware.Camera.CameraInfo;
+import static android.hardware.Camera.PreviewCallback;
+import static android.hardware.Camera.getCameraInfo;
+import static android.hardware.Camera.getNumberOfCameras;
+import static android.hardware.Camera.open;
 
 @SuppressWarnings("deprecation")
 public class CameraHelper implements PreviewCallback {
@@ -64,22 +67,17 @@ public class CameraHelper implements PreviewCallback {
 
 
     private void openCamera() {
-        DLog.d("openCamera");
-
         try {
-            if (!hasFacing(cameraFacing)) {
-                cameraFacing = (cameraFacing == CameraInfo.CAMERA_FACING_FRONT ?
-                        CameraInfo.CAMERA_FACING_BACK : CameraInfo.CAMERA_FACING_FRONT);
-            }
             try {
                 camera = open(cameraFacing);
             } catch (Exception e) {
-
-            }
-            //某些设备摄像头无法开启,使用open(),设置当前摄像头为后置模式
-            if (camera == null) {
-                camera = open();
-                cameraFacing = CameraInfo.CAMERA_FACING_BACK;
+                //某些设备摄像头无法开启,使用open(back),设置当前摄像头为后置模式
+                cameraFacing = (cameraFacing == CameraInfo.CAMERA_FACING_FRONT ?
+                        CameraInfo.CAMERA_FACING_BACK : CameraInfo.CAMERA_FACING_FRONT);
+                if (camera == null) {
+                    camera = open(CameraInfo.CAMERA_FACING_BACK);
+                    cameraFacing = CameraInfo.CAMERA_FACING_BACK;
+                }
             }
             camera.setPreviewDisplay(surfaceHolder);
             initCamera();
@@ -98,17 +96,18 @@ public class CameraHelper implements PreviewCallback {
                 Camera.Parameters parameters = camera.getParameters();
                 setOptimalPreviewSize(parameters, camera_max_width);
 
-                if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-//                    camera.setDisplayOrientation(cameraFacing == CameraInfo.CAMERA_FACING_FRONT ? 90 : 270);
-                    camera.setDisplayOrientation(90);
-                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    camera.setDisplayOrientation(0);
-                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-                    camera.setDisplayOrientation(270);
-                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-//                    camera.setDisplayOrientation(cameraFacing == CameraInfo.CAMERA_FACING_FRONT ? 0 : 180);
-                    camera.setDisplayOrientation(0);
-                }
+//                if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+////                    camera.setDisplayOrientation(cameraFacing == CameraInfo.CAMERA_FACING_FRONT ? 90 : 270);
+//                    camera.setDisplayOrientation(90);
+//                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+//                    camera.setDisplayOrientation(0);
+//                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
+//                    camera.setDisplayOrientation(270);
+//                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+////                    camera.setDisplayOrientation(cameraFacing == CameraInfo.CAMERA_FACING_FRONT ? 0 : 180);
+//                    camera.setDisplayOrientation(0);
+//                }
+                setCameraDisplayOrientation((Activity) context, getCameraId(), camera);
                 camera.setParameters(parameters);
                 camera.cancelAutoFocus();
                 startPreview();
@@ -131,12 +130,11 @@ public class CameraHelper implements PreviewCallback {
                 Iterator mIterator = supportedPreviewSizes.iterator();
                 while (mIterator.hasNext()) {
                     Camera.Size size = (Camera.Size) mIterator.next();
-                    if (size.width > 640 &&
-                            (double) Math.abs(size.width - 640) < minDiff
+                    if ((double) Math.abs(size.width - 1000) < minDiff
                             && (size.width * sh == size.height * sw
                             || size.width * sw == size.height * sh)) {
                         optimalSize = size;
-                        minDiff = (double) Math.abs(size.width - 640);
+                        minDiff = (double) Math.abs(size.width - 1000);
                     }
                 }
             }
@@ -236,6 +234,39 @@ public class CameraHelper implements PreviewCallback {
             }
         }
         return false;
+    }
+
+    private void setCameraDisplayOrientation(Activity activity,
+                                             int cameraId, android.hardware.Camera camera) {
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        int rotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
     }
 
 

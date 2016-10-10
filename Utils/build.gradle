@@ -33,13 +33,13 @@ dependencies {
 
 //task to delete the old jar
 task deleteOldJar(type: Delete) {
-    delete '/libs/libutils.jar'
+    delete 'libs/libutils.jar'
 }
 
 //task to export contexts as jar
 task exportJar(type: Copy) {
     from('build/intermediates/bundles/release/')
-    into('/libs')
+    into('libs')
     include('classes.jar')
     rename('classes.jar', 'libutils.jar')
 }
