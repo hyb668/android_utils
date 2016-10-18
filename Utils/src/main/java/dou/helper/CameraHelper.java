@@ -34,6 +34,7 @@ public class CameraHelper implements PreviewCallback {
     private int cameraFacing = CameraInfo.CAMERA_FACING_FRONT;
     private int sw, sh;
     private int camera_max_width = 0;
+    private int rotate = 0;
 
     public CameraHelper(Context context, CameraParams params) {
         this.context = context;
@@ -94,6 +95,7 @@ public class CameraHelper implements PreviewCallback {
         if (null != camera) {
             try {
                 Camera.Parameters parameters = camera.getParameters();
+                parameters.setPreviewFormat(ImageFormat.NV21);
                 setOptimalPreviewSize(parameters, camera_max_width);
 
 //                if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
@@ -212,6 +214,14 @@ public class CameraHelper implements PreviewCallback {
             camera.stopPreview();
     }
 
+    public int getRotate() {
+        return rotate;
+    }
+
+    public void setRotate(int rotate) {
+        this.rotate = rotate;
+    }
+
     public interface PreviewFrameListener {
         void onPreviewFrame(byte[] data, Camera camera);
     }
@@ -266,6 +276,7 @@ public class CameraHelper implements PreviewCallback {
         } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
+        setRotate(result);
         camera.setDisplayOrientation(result);
     }
 

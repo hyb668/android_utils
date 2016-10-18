@@ -35,6 +35,11 @@ import java.io.OutputStream;
 public class BitmapUtil {
     private static final String TAG = BitmapUtil.class.getSimpleName();
 
+
+
+//    public static Bitmap cropBitmap(){
+//
+//    }
     /**
      * convert Bitmap to byte array
      */

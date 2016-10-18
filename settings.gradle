@@ -1,2 +1,1 @@
-include '/Test/:TestMvp', '/Test/:testopengl', '/Test/:ViewTest', '/Test/:NomalGank','/Test/:InfinitecycleviewpagerTest'
-include ':Utils',':infinitecycleviewpager'
+include ':Utils'
