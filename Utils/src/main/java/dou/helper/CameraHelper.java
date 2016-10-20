@@ -44,6 +44,7 @@ public class CameraHelper implements PreviewCallback {
         this.camera_max_width = params.max_width;
         this.previewFrameListener = params.previewFrameListener;
         this.cameraFacing = params.firstCameraId;
+        this.rotate = params.camera_ori;
         this.sw = DisplayUtil.getScreenWidthPixels(context);
         this.sh = DisplayUtil.getScreenHeightPixels(context);
 
@@ -276,9 +277,11 @@ public class CameraHelper implements PreviewCallback {
         } else {  // back-facing
             result = (info.orientation - degrees + 360) % 360;
         }
-        setRotate(result);
+        if (getRotate() == -1) {
+            setRotate(result);
+        }else{
+            result = getRotate();
+        }
         camera.setDisplayOrientation(result);
     }
-
-
 }

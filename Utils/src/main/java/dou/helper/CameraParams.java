@@ -10,5 +10,6 @@ public class CameraParams {
     public int max_width;
     public CameraHelper.PreviewFrameListener previewFrameListener;
     public int firstCameraId;
+    public int camera_ori = -1;
 
 }
