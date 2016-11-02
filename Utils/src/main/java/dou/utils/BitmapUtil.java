@@ -36,10 +36,10 @@ public class BitmapUtil {
     private static final String TAG = BitmapUtil.class.getSimpleName();
 
 
-
 //    public static Bitmap cropBitmap(){
 //
 //    }
+
     /**
      * convert Bitmap to byte array
      */
@@ -403,6 +403,36 @@ public class BitmapUtil {
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         return Bitmap.createBitmap(bitMap, 0, 0, width, height, matrix, true);
+    }
+
+    /**
+     * 根据原图和变长绘制圆形图片
+     *
+     * @param source
+     * @param min
+     * @return
+     */
+    private Bitmap createCircleImage(Bitmap source, int min) {
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        Bitmap target = Bitmap.createBitmap(min, min, Bitmap.Config.ARGB_8888);
+        /**
+         * 产生一个同样大小的画布
+         */
+        Canvas canvas = new Canvas(target);
+        /**
+         * 首先绘制圆形
+         */
+        canvas.drawCircle(min / 2, min / 2, min / 2, paint);
+        /**
+         * 使用SRC_IN
+         */
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        /**
+         * 绘制图片
+         */
+        canvas.drawBitmap(source, 0, 0, paint);
+        return target;
     }
 
 }
