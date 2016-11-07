@@ -11,6 +11,4 @@ public class CameraParams {
     public CameraHelper.PreviewFrameListener previewFrameListener;
     public int firstCameraId;
     public int camera_ori = -1;
-    public boolean needSurface;
-
 }
