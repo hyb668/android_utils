@@ -3,6 +3,7 @@ package dou.helper;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.Surface;
@@ -26,7 +27,7 @@ public class CameraHelper implements PreviewCallback {
     private Camera camera = null;
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder = null;
-
+    private SurfaceTexture mSurfaceTexture;
     private PreviewFrameListener previewFrameListener;
     private Context context;
     private Camera.Size previewSize;
@@ -40,7 +41,6 @@ public class CameraHelper implements PreviewCallback {
         this.context = context;
         assert params != null;
         this.surfaceView = params.surfaceView;
-        assert this.surfaceView != null;
         this.camera_max_width = params.max_width;
         this.previewFrameListener = params.previewFrameListener;
         this.cameraFacing = params.firstCameraId;
@@ -48,23 +48,25 @@ public class CameraHelper implements PreviewCallback {
         this.sw = DisplayUtil.getScreenWidthPixels(context);
         this.sh = DisplayUtil.getScreenHeightPixels(context);
 
-        surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-            @Override
-            public void surfaceCreated(SurfaceHolder holder) {
-                openCamera();
-            }
+        if (surfaceView != null) {
+            surfaceHolder = surfaceView.getHolder();
+            surfaceHolder.addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder holder) {
+                    openCamera();
+                }
 
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                initCamera();
-            }
+                @Override
+                public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                    initCamera();
+                }
 
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
-                stopCamera();
-            }
-        });
+                @Override
+                public void surfaceDestroyed(SurfaceHolder holder) {
+                    stopCamera();
+                }
+            });
+        }
     }
 
 
@@ -81,7 +83,15 @@ public class CameraHelper implements PreviewCallback {
                     cameraFacing = CameraInfo.CAMERA_FACING_BACK;
                 }
             }
-            camera.setPreviewDisplay(surfaceHolder);
+
+            if (surfaceView != null)
+                camera.setPreviewDisplay(surfaceHolder);
+            else {
+                if (mSurfaceTexture == null) {
+                    mSurfaceTexture = new SurfaceTexture(-1);
+                }
+                camera.setPreviewTexture(mSurfaceTexture);
+            }
             initCamera();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,17 +109,6 @@ public class CameraHelper implements PreviewCallback {
                 parameters.setPreviewFormat(ImageFormat.NV21);
                 setOptimalPreviewSize(parameters, camera_max_width);
 
-//                if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-////                    camera.setDisplayOrientation(cameraFacing == CameraInfo.CAMERA_FACING_FRONT ? 90 : 270);
-//                    camera.setDisplayOrientation(90);
-//                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//                    camera.setDisplayOrientation(0);
-//                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) {
-//                    camera.setDisplayOrientation(270);
-//                } else if (((Activity) context).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
-////                    camera.setDisplayOrientation(cameraFacing == CameraInfo.CAMERA_FACING_FRONT ? 0 : 180);
-//                    camera.setDisplayOrientation(0);
-//                }
                 setCameraDisplayOrientation((Activity) context, getCameraId(), camera);
                 camera.setParameters(parameters);
                 camera.cancelAutoFocus();
@@ -160,15 +159,17 @@ public class CameraHelper implements PreviewCallback {
 
             Log.d("CameraHelper", iw + ":" + ih + ":" + sh + ":" + sw);
 
-            if (iw * sh <= ih * sw) {
-                surfaceView.getLayoutParams().width = sh * iw / ih;
-                surfaceView.getLayoutParams().height = sh;
-            } else {
-                surfaceView.getLayoutParams().width = sw;
-                surfaceView.getLayoutParams().height = sw * iw / ih;
-            }
+            if (surfaceView != null) {
+                if (iw * sh <= ih * sw) {
+                    surfaceView.getLayoutParams().width = sh * iw / ih;
+                    surfaceView.getLayoutParams().height = sh;
+                } else {
+                    surfaceView.getLayoutParams().width = sw;
+                    surfaceView.getLayoutParams().height = sw * iw / ih;
+                }
 
-            surfaceView.requestLayout();
+                surfaceView.requestLayout();
+            }
             cameraParams.setPreviewSize(iw, ih);
         }
     }
@@ -180,6 +181,12 @@ public class CameraHelper implements PreviewCallback {
 
     public void stopCamera() {
         if (null != camera) {
+
+            if (mSurfaceTexture != null) {
+                mSurfaceTexture.release();
+                mSurfaceTexture = null;
+            }
+
             camera.setPreviewCallbackWithBuffer(null);
             camera.stopPreview();
             camera.release();
@@ -279,7 +286,7 @@ public class CameraHelper implements PreviewCallback {
         }
         if (getRotate() == -1) {
             setRotate(result);
-        }else{
+        } else {
             result = getRotate();
         }
         camera.setDisplayOrientation(result);
