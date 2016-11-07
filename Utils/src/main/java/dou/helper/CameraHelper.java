@@ -66,6 +66,8 @@ public class CameraHelper implements PreviewCallback {
                     stopCamera();
                 }
             });
+        } else {
+            openCamera();
         }
     }
 
