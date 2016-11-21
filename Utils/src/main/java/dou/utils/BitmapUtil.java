@@ -319,11 +319,15 @@ public class BitmapUtil {
     }
 
     public static Bitmap decodeScaleImage(String imagePath, int outWidth, int outHeight) {
+        return decodeScaleImage(imagePath, outWidth, outHeight, 0);
+    }
+
+    public static Bitmap decodeScaleImage(String imagePath, int outWidth, int outHeight, int scale) {
         BitmapFactory.Options localOptions = new BitmapFactory.Options();
         localOptions.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(imagePath, localOptions);
-        int i = calculateInSampleSize(localOptions, outWidth, outHeight);
-        localOptions.inSampleSize = i;
+        scale = calculateInSampleSize(localOptions, outWidth, outHeight);
+        localOptions.inSampleSize = scale;
         localOptions.inJustDecodeBounds = false;
         Bitmap localBitmap1 = BitmapFactory.decodeFile(imagePath, localOptions);
         int j = getPictureDegree(imagePath);
