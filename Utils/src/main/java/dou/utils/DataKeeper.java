@@ -9,9 +9,6 @@ import android.content.SharedPreferences;
 public class DataKeeper {
 
     private SharedPreferences sp;
-    public static final String KEY_PK_HOME = "msg_pk_home";
-    public static final String KEY_PK_NEW = "msg_pk_new";
-    private static final String TAG = DataKeeper.class.getSimpleName();
 
     public DataKeeper(Context context, String fileName) {
         sp = context.getSharedPreferences(fileName, Context.MODE_PRIVATE);
@@ -33,7 +30,7 @@ public class DataKeeper {
         return sp.getFloat(key, defValue);
     }
 
-    public int getInt(String key, int defValue) {
+    public int get(String key, int defValue) {
         return sp.getInt(key, defValue);
     }
 
@@ -48,29 +45,29 @@ public class DataKeeper {
 
     public void put(String key, String value) {
         if (value == null) {
-            sp.edit().remove(key).commit();
+            sp.edit().remove(key).apply();
         } else {
-            sp.edit().putString(key, value).commit();
+            sp.edit().putString(key, value).apply();
         }
     }
 
     public void put(String key, boolean value) {
-        sp.edit().putBoolean(key, value).commit();
+        sp.edit().putBoolean(key, value).apply();
     }
 
     public void put(String key, float value) {
-        sp.edit().putFloat(key, value).commit();
+        sp.edit().putFloat(key, value).apply();
     }
 
     public void put(String key, long value) {
-        sp.edit().putLong(key, value).commit();
+        sp.edit().putLong(key, value).apply();
     }
 
-    public void putInt(String key, int value) {
-        sp.edit().putInt(key, value).commit();
+    public void put(String key, int value) {
+        sp.edit().putInt(key, value).apply();
     }
 
-    public void clearTag() {
-        sp.edit().clear().commit();
+    public void clear() {
+        sp.edit().clear().apply();
     }
 }

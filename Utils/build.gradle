@@ -26,6 +26,8 @@ android {
         // if true, only report errors
         ignoreWarnings false
     }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {

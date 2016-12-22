@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +19,6 @@ import dou.utils.DisplayUtil;
 import static android.hardware.Camera.CameraInfo;
 import static android.hardware.Camera.PreviewCallback;
 import static android.hardware.Camera.getCameraInfo;
-import static android.hardware.Camera.getNumberOfCameras;
 import static android.hardware.Camera.open;
 
 @SuppressWarnings("deprecation")
@@ -66,6 +66,19 @@ public class CameraHelper implements PreviewCallback {
                     stopCamera();
                 }
             });
+
+            surfaceView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (camera != null)
+                        camera.autoFocus(new Camera.AutoFocusCallback() {
+                            @Override
+                            public void onAutoFocus(boolean success, Camera camera) {
+
+                            }
+                        });
+                }
+            });
         } else {
             openCamera();
         }
@@ -74,17 +87,25 @@ public class CameraHelper implements PreviewCallback {
 
     private void openCamera() {
         try {
-            try {
+
+            if (hasFacing(cameraFacing))
                 camera = open(cameraFacing);
-            } catch (Exception e) {
-                //某些设备摄像头无法开启,使用open(back),设置当前摄像头为后置模式
+            else {
                 cameraFacing = (cameraFacing == CameraInfo.CAMERA_FACING_FRONT ?
                         CameraInfo.CAMERA_FACING_BACK : CameraInfo.CAMERA_FACING_FRONT);
-                if (camera == null) {
-                    camera = open(CameraInfo.CAMERA_FACING_BACK);
-                    cameraFacing = CameraInfo.CAMERA_FACING_BACK;
-                }
+                camera = open(cameraFacing);
             }
+//            try {
+//                camera = open(cameraFacing);
+//            } catch (Exception e) {
+//                //某些设备摄像头无法开启,使用open(back),设置当前摄像头为后置模式
+//                cameraFacing = (cameraFacing == CameraInfo.CAMERA_FACING_FRONT ?
+//                        CameraInfo.CAMERA_FACING_BACK : CameraInfo.CAMERA_FACING_FRONT);
+//                if (camera == null) {
+//                    camera = open(cameraFacing);
+//                    cameraFacing = CameraInfo.CAMERA_FACING_BACK;
+//                }
+//            }
 
             if (surfaceView != null)
                 camera.setPreviewDisplay(surfaceHolder);
@@ -246,7 +267,7 @@ public class CameraHelper implements PreviewCallback {
 
     private boolean hasFacing(int facing) {
         CameraInfo info = new CameraInfo();
-        for (int i = 0; i < getNumberOfCameras(); i++) {
+        for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
             getCameraInfo(i, info);
 
             if (info.facing == facing) {

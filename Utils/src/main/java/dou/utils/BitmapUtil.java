@@ -6,12 +6,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.YuvImage;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -67,8 +69,15 @@ public class BitmapUtil {
     /**
      * convert byte array to Bitmap
      */
-    public static Bitmap byteToBitmap(byte[] b) {
+    public static Bitmap getBitmapFromByte(byte[] b) {
         return (b == null || b.length == 0) ? null : BitmapFactory.decodeByteArray(b, 0, b.length);
+    }
+
+    public static Bitmap getBitmapFromYuvByte(byte[] yuv, int iw, int ih) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        YuvImage yuvImage = new YuvImage(yuv, ImageFormat.NV21, iw, ih, null);
+        yuvImage.compressToJpeg(new Rect(0, 0, iw, ih), 80, out);
+        return getBitmapFromByte(out.toByteArray());
     }
 
     /**
